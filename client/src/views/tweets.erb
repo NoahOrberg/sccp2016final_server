@@ -1,0 +1,42 @@
+<!-- <p><%= @result%></p> -->
+<h1>Tweet Text List</h1>
+
+<div id="app"></div>
+<!-- Load Babel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.14.0/babel.min.js"></script>
+<!-- Load React.js -->
+<script src="https://unpkg.com/react@15.3.2/dist/react.min.js"></script>
+<script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.min.js"></script>
+<!-- Load Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.8.1/immutable.min.js"></script>
+<!-- Your custom script here -->
+<!-- <script> -->
+<!--   var user_info = <%= @result %>; -->
+<!--   var names = document.getElementById("name"); -->
+<!--   var ul = document.createElement("ul"); -->
+<!--   function createList(data, i){ -->
+<!--     var text = data["name"] + " &#45;&#45;&#45;&#45; " + data["text"] + "  at" + data["create_time"]; -->
+<!--     var list = document.createElement("li"); -->
+<!--     var textNode = document.createTextNode(text); -->
+<!--     list.appendChild(textNode); -->
+<!--     return list -->
+<!--   } -->
+<!--   user_info.map(createList).forEach(function (li) {ul.appendChild(li)}); -->
+<!--   names.appendChild(ul); -->
+<!-- </script> -->
+
+<script type="text/babel">
+  class App extends React.Component{
+    constructor(props) {
+      super(props);
+    }
+    render(){
+      const res = <%= @result %>
+      const listRes = res.map((x, idx) =>
+        <li><h3>{x["name"]}: at {x["create_time"]}</h3> {x["text"]}</li>
+      );
+      return <ul> {listRes} </ul>
+    }
+  }
+  ReactDOM.render(<App />, document.getElementById("app"));
+</script>

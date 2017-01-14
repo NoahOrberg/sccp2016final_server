@@ -1,0 +1,17 @@
+<!-- <p><%= @result%></p> -->
+<h1>User List</h1>
+<div id="name"></div>
+<script>
+  var user_info = <%= @result %>;
+  var names = document.getElementById("name");
+  var ul = document.createElement("ul");
+  function createList(data, i){
+    var text = data["name"];
+    var list = document.createElement("li");
+    var textNode = document.createTextNode(text);
+    list.appendChild(textNode)
+    return list
+  }
+  user_info.map(createList).forEach(function (li) {ul.appendChild(li)});
+  names.appendChild(ul);
+</script>

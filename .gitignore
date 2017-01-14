@@ -1,0 +1,18 @@
+.DS_Store
+<<<<<<< HEAD
+twitter/src/.bundle
+twitter/vendor
+twitter/Gemfile.lock
+twitter/.DS_Store
+client/src/.bundle
+client/vendor
+=======
+twitter/.bundle/
+twitter/vendor/
+twitter/Gemfile.lock
+twitter/.DS_Store
+client/.bundle/
+client/vendor/
+>>>>>>> origin/master
+client/Gemfile.lock
+client/.DS_Store
