@@ -20,33 +20,39 @@ class MainApp < Sinatra::Base
   get '/' do
     "Hello"
   end
+
   # get all user infomation
   get '/users' do
     status 200
     json User.new.getAllUser
   end
+
   # get user infomation 
   get '/users/:id' do
     res = User.new.getUser(params[:id].to_i)
     if res.empty? then
       status 400
-      '{ error: "The user does not exist." }'
+      json ({error: "The user does not exist."})
     else
       status 200
       json res
     end
   end
+
   # get all tweet infomation
   get '/tweets' do
     status 200
     json Tweet.new.getAllTweets
   end
+
   # get user tweets
   get '/tweets/:id' do
     status 200
     json Tweet.new.getUserTweets(params)
   end
+
   # post tweet
+  # json format is { user_id: 1, text: "foo" }
   post '/tweets', provides: :json do
     params=  JSON.parse(request.body.read, {:symbolize_names => true})
     res = Tweet.new.tweet(params)
@@ -55,9 +61,10 @@ class MainApp < Sinatra::Base
     end
     json res
   end
-  # post new user infomation 
+
+  # post new user infomation
+  # json format is { name: "foo", password: "pass1" }
   post '/users', provides: :json do
-    # p request.body.read
     params=  JSON.parse(request.body.read, {:symbolize_names => true})
     if User.new.getAllUser.map{|hash| hash[:name]}.include?(params[:name]) then
       status 400
@@ -67,27 +74,30 @@ class MainApp < Sinatra::Base
       json User.new.addUser(params)
     end
   end
+
   # get all follow infomation
   get '/follows' do
     status 200
     json Follow.new.getAllFollows
   end
-  # post follow infomation => json format is {follow_id: x, user_id: y}
+
+  # post follow infomation
+  # json format is {follow_id: x, user_id: y}
   # It's mean, y =follow=> x
   post '/follows', provides: :json do
     status 200
     params=  JSON.parse(request.body.read, {:symbolize_names => true})
     json Follow.new.followUser(params)
   end
+
   # post unfollow infomation
+  # json format is {follow_id: x, user_id: y}
+  # It's mean, y =unfollow=> x
   post '/unfollows', provides: :json do
     status 200
     params=  JSON.parse(request.body.read, {:symbolize_names => true})
     json Follow.new.unFollowUser(params)
   end
-  # ##############################
-  # -- Not complete below code....
-  # ##############################
   get '/tweets/timeline/:user_id' do
     user_data = User.new.getUser(params[:user_id])
     if user_data.empty? then
@@ -98,6 +108,9 @@ class MainApp < Sinatra::Base
       json Tweet.new.getUserTimeline(params[:user_id])
     end
   end
+  # # # # # # # # # # # # # # # # # # # # # # # # #
+  # -- The following methods are incomplete.... ;(
+  # # # # # # # # # # # # # # # # # # # # # # # # #
   get '/users/:id/unfollow' do
 
   end

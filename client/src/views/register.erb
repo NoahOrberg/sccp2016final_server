@@ -1,10 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title><%= @title%></title>
-</head>
-<body>
-  <%= yield %>
-</body>
-</html>
+<div id="app"></div>
+<!-- Load Babel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.14.0/babel.min.js"></script>
+<!-- Load React.js -->
+<script src="https://unpkg.com/react@15.3.2/dist/react.min.js"></script>
+<script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.min.js"></script>
+<!-- Load Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.8.1/immutable.min.js"></script>
+<script type="text/babel">
+// 入力フォームを作り、jsonでpushする
+  class App extends React.Component{
+    constructor(props) {
+      super(props);
+      this.state={text: "aa"};
+    }
+    handleChange(e){
+      const textValue = e.target.value;
+      this.setState({ text: textValue });
+    }
+    handleSubmit(e){
+      // json ポスト
+      // liset text area 
+      this.setState({text: ""})
+    }
+    render(){
+      return <form /* method="post" action="localhost:9393/users" */ >
+                <input type="text"
+                  value={this.state.text}
+                  onChange={(e) => this.handleChange(e)}
+                />
+                <input type="submit"
+                  onClick={(e) => this.handleSubmit(e)}
+                /> 
+              </form>
+    }
+  }
+  ReactDOM.render(<App />, document.getElementById("app"));
+</script>

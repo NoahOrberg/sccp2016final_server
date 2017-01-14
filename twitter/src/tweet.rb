@@ -9,14 +9,6 @@ class Tweet
       Time :create_time
     end
     @t_tweet  = db[:tweet]
-    db.create_table? :user do
-      primary_key :id
-      String :name
-      String :password
-      String :salt
-      Time :create_time
-    end
-    @t_user   = db[:user]
   end
   def getAllTweets
     @t_tweet.all
@@ -25,7 +17,7 @@ class Tweet
     @t_tweet.where(id: params[:id]).all
   end
   def tweet(params)
-    userinfo = @t_user.where(id: params[:user_id]).all
+    userinfo = User.new.getUser(params[:user_id]).all
     if userinfo.empty? then
       return {}
     end
