@@ -38,7 +38,7 @@ class MainApp < Sinatra::Base
          name: @name,
          pass: @pass
     }.to_json
-    req.body = payload # リクエストボデーにJSONをセット
+    req.body = payload
     res = https.request(req)
     res = JSON.parse(res.body, {:symbolize_names => true})
     p res.class
@@ -74,7 +74,11 @@ class MainApp < Sinatra::Base
   
   get '/timeline' do
     @title = 'TimeLine'
-    num = session[:id] # target: user_id -- いずれログインしているユーザに自動で書き換えるようにする。
+    if session[:id].nil? then
+      redirect '/login'
+    end
+    p session[:id]
+    num = session[:id]
     res = Net::HTTP::start('localhost', 9393) {|http|
       http.get('/tweets/timeline/'+num.to_s)
     }
@@ -86,6 +90,11 @@ class MainApp < Sinatra::Base
     erb :register
   end
 
+  post '/logout' do
+    session[:id] = nil
+    session[:name] = nil
+    redirect '/login'
+  end
 end
 
 
