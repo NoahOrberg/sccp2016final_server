@@ -12,13 +12,26 @@ class MainApp < Sinatra::Base
   configure :development do
     register Sinatra::Reloader
   end
-  
+
   configure do
     set :stat, {}
   end
-  
+
   get '/' do
     "Hello"
+  end
+
+  # auth user
+  post '/auth', provides: :json do
+    params=  JSON.parse(request.body.read, {:symbolize_names => true})
+    res = User.new.getUserName(params[:name])
+    if res.empty? || res[0][:password].to_s != params[:pass].to_s then
+      status 400
+      json ({error: "The user does not exist."})
+    else
+      status 200
+      json res
+    end
   end
 
   # get all user infomation
@@ -27,7 +40,7 @@ class MainApp < Sinatra::Base
     json User.new.getAllUser
   end
 
-  # get user infomation 
+  # get user infomation
   get '/users/:id' do
     res = User.new.getUser(params[:id].to_i)
     if res.empty? then
@@ -103,7 +116,7 @@ class MainApp < Sinatra::Base
     if user_data.empty? then
       status 400
       json ({error: "The tweet user does not exist."})
-    else 
+    else
       status 200
       json Tweet.new.getUserTimeline(params[:user_id])
     end
@@ -115,5 +128,3 @@ class MainApp < Sinatra::Base
 
   end
 end
-
-

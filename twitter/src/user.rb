@@ -16,6 +16,9 @@ class User
   def getAllUser
     @t_user.all
   end
+  def getUserName(name)
+    @t_user.where(name: name).all
+  end
   def getUser(id)
     @t_user.where(id: id).all
   end

@@ -1,0 +1,64 @@
+<div class="tabs">
+  <div id="tl" class="tab is-tab-selected" onclick="
+    document.getElementById('tl').className='tab is-tab-selected';
+    document.getElementById('nc').className='tab';
+    document.getElementById('dm').className='tab';
+    document.getElementById('pf').className='tab';
+  ">TimeLine</div>
+  <div id="nc" class="tab" onclick="
+    document.getElementById('tl').className='tab';
+    document.getElementById('nc').className='tab is-tab-selected';
+    document.getElementById('dm').className='tab';
+    document.getElementById('pf').className='tab';
+  ">Notification</div>
+  <div id="dm" class="tab" onclick="
+    document.getElementById('tl').className='tab';
+    document.getElementById('nc').className='tab';
+    document.getElementById('dm').className='tab is-tab-selected';
+    document.getElementById('pf').className='tab';
+  ">DirectMessage</div>
+  <div id="pf" class="tab" onclick="
+    document.getElementById('tl').className='tab';
+    document.getElementById('dm').className='tab';
+    document.getElementById('nc').className='tab';
+    document.getElementById('pf').className='tab is-tab-selected';
+  ">Profile</div>
+</div>
+<div id="app"></div>
+<!-- Load Babel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.14.0/babel.min.js"></script>
+<!-- Load React.js -->
+<script src="https://unpkg.com/react@15.3.2/dist/react.min.js"></script>
+<script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.min.js"></script>
+<!-- Load Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.8.1/immutable.min.js"></script>
+<script type="text/babel">
+  class App extends React.Component{
+    constructor(props) {
+      super(props);
+    }
+    render(){
+      const res = <%= @result %>
+      const listRes = res.map((x, idx) =>
+        <div class="post"> 
+          <div class="postUser"> 
+            <div class="postUser__portrait"> 
+              <span class="icon fa fa&#45;user&#45;circle&#45;o"></span> 
+            </div> 
+            <div class="postUser__name">{x["name"]}</div> 
+          </div> 
+          <div class="postBody"> 
+            <div class="postBody__content"> 
+              {x["text"]}
+            </div> 
+            <div class="postBody__date"> 
+              {x["create_time"]}
+            </div>
+          </div>
+        </div>
+      );
+      return <div class="stream">  {listRes} </div>
+    }
+  }
+  ReactDOM.render(<App />, document.getElementById("app"));
+</script>
