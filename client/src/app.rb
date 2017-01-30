@@ -10,49 +10,72 @@ class MainApp < Sinatra::Base
   configure :development do
     register Sinatra::Reloader
   end
-  
   use Rack::Session::Pool, expire_after: 2_592_000
-
   configure do
     set :stat, {}
   end
-  
   get '/' do
     redirect 'login'
   end
-
-  get '/login' do
+  # register
+  get '/users/register' do #{{{
+    erb :register
+  end
+  #}}}
+  post '/register' do #{{{
+    uri = URI.parse("http://localhost:9393/users")
+    https = Net::HTTP.new(uri.host, uri.port)
+    # https.use_ssl = true
+    req = Net::HTTP::Post.new(uri.request_uri)
+    req["Content-Type"] = "application/json"
+    payload = {
+         name: params[:name],
+         password: params[:password]
+    }.to_json
+    req.body = payload
+    res = https.request(req)
+    res = JSON.parse(res.body, {:symbolize_names => true})
+    if res.include?(:error) then
+      redirect '/users/register'
+    else
+      redirect '/login'
+    end
+  end
+  #}}}
+  
+  # login
+  get '/login' do #{{{
     erb :login
   end
-
-  post '/auth' do
+  #}}}
+  # -> auth 
+  post '/auth' do #{{{
     @name = params[:name]
-    @pass = params[:pass]
+    @pass = params[:password]
     uri = URI.parse("http://localhost:9393/auth")
     https = Net::HTTP.new(uri.host, uri.port)
-     
     # https.use_ssl = true
     req = Net::HTTP::Post.new(uri.request_uri)
     req["Content-Type"] = "application/json"
     payload = {
          name: @name,
-         pass: @pass
+         password: @pass
     }.to_json
     req.body = payload
     res = https.request(req)
     res = JSON.parse(res.body, {:symbolize_names => true})
-    p res.class
-    p res
     if res.include?(:error) then
       redirect '/login'
     else
-      session[:id] = res[0][:id]
-      session[:name] = res[0][:name]
+      session[:id] = res[:id]
+      session[:name] = res[:name]
       redirect '/timeline'
     end
   end
-
-  get '/users' do
+  #}}}
+  
+  # Show all users
+  get '/users' do #{{{
     @title = 'All Users'
     res = Net::HTTP::start('localhost', 9393) {|http|
       http.get('/users')
@@ -61,8 +84,25 @@ class MainApp < Sinatra::Base
     # @result = JSON.parse(res.body, {:symbolize_names => true})
     erb :users
   end
-
-  get '/tweets' do
+  #}}}
+  
+  # Show user page
+  get '/users/:name' do #{{{
+    res = Net::HTTP::start('localhost', 9393) {|http|
+      http.get('/users/'+params[:name].to_s)
+    }
+    userinfo = JSON.parse(res.body, {:symbolize_names => true})
+    @result = res.body
+    if userinfo[:id] == session[:id] then
+      erb :mypage
+    else
+      erb :userpage
+    end
+  end
+  #}}}
+  
+  # Show All user tweets 
+  get '/tweets' do #{{{
     @title = 'All Tweets'
     res = Net::HTTP::start('localhost', 9393) {|http|
       http.get('/tweets')
@@ -71,13 +111,30 @@ class MainApp < Sinatra::Base
     # @result = JSON.parse(res.body, {:symbolize_names => true})
     erb :tweets2
   end
+  #}}}
+  post '/tweet' do #{{{
+    uri = URI.parse("http://localhost:9393/tweets")
+    https = Net::HTTP.new(uri.host, uri.port)
+    # https.use_ssl = true
+    req = Net::HTTP::Post.new(uri.request_uri)
+    req["Content-Type"] = "application/json"
+    payload = {
+      user_id: session[:id].to_i,
+      text: params[:text]
+    }.to_json
+    req.body = payload
+    res = https.request(req)
+    res = JSON.parse(res.body, {:symbolize_names => true})
+    redirect '/timeline'
+  end
+  #}}}
   
-  get '/timeline' do
+  # Show user TimeLine
+  get '/timeline' do #{{{
     @title = 'TimeLine'
     if session[:id].nil? then
       redirect '/login'
     end
-    p session[:id]
     num = session[:id]
     res = Net::HTTP::start('localhost', 9393) {|http|
       http.get('/tweets/timeline/'+num.to_s)
@@ -85,16 +142,45 @@ class MainApp < Sinatra::Base
     @result = res.body
     erb :tweets
   end
-
-  get '/users/register' do
-    erb :register
+  #}}}
+  
+  # Follow user
+  post '/follows' do #{{{
+    uri = URI.parse("http://localhost:9393/follows")
+    https = Net::HTTP.new(uri.host, uri.port)
+    # https.use_ssl = true
+    req = Net::HTTP::Post.new(uri.request_uri)
+    req["Content-Type"] = "application/json"
+    payload = {
+      user_id: session[:id].to_i,
+      follow_id: params[:follow_id].to_i
+    }.to_json
+    req.body = payload
+    res = https.request(req)
+    res = JSON.parse(res.body, {:symbolize_names => true})
+    redirect '/unfollows'
   end
+  #}}}
 
-  post '/logout' do
+  # Show unfollow users
+  get '/unfollows' do #{{{
+    if session[:id].nil? then
+      redirect '/login'
+    end
+    res = Net::HTTP::start('localhost', 9393) {|http|
+      http.get('/users/'+session[:id].to_s+'/unfollow')
+    }
+    @result = res.body
+    erb :unfollow_users
+  end
+  #}}}
+  
+  # logout
+  post '/logout' do #{{{
     session[:id] = nil
     session[:name] = nil
     redirect '/login'
   end
+  #}}}
+
 end
-
-

@@ -17,18 +17,20 @@ class Tweet
     @t_tweet.where(id: params[:id]).all
   end
   def tweet(params)
-    userinfo = User.new.getUser(params[:user_id]).all
+    userinfo = User.new.getUser(params[:user_id])
     if userinfo.empty? then
-      return {}
+      data = {error: "This user does not exist."}
+    else
+      # TODO: [0] is not good....
+      data = {text: params[:text], user_id: params[:user_id], name: userinfo[0][:name], create_time: Time.now.year.to_s+'-'+Time.now.month.to_s+'-'+Time.now.day.to_s+' '+Time.now.hour.to_s+':'+Time.now.min.to_s+':'+Time.now.sec.to_s+' '+Time.now.utc_offset.to_s}
+      id = @t_tweet.insert(data)
+      data[:id] = id
+      data
     end
-    data = {text: params[:text], user_id: params[:user_id], name: userinfo[0][:name], create_time: Time.now.year.to_s+'-'+Time.now.month.to_s+'-'+Time.now.day.to_s+' '+Time.now.hour.to_s+':'+Time.now.min.to_s+':'+Time.now.sec.to_s+' '+Time.now.utc_offset.to_s}
-    id = @t_tweet.insert(data)
-    data[:id] = id
-    data
   end
   def getUserTimeline(user_id)
     id_list = Follow.new.getFollowersId(user_id).map{|item| item[:follow_id]}
     id_list.push(user_id.to_i)
-    @t_tweet.where(:user_id => id_list).all
+    @t_tweet.where(:user_id => id_list).all.sort{| a, b | b[:create_time] <=> a[:create_time]}
   end
 end

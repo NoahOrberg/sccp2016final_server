@@ -23,9 +23,8 @@ class Follow
   def getFollowersId(id)
     @t_follow.where(user_id: id).all
   end
-  def save(follow_id, user_id)
-  end
-  def find(id)
+  def getFollow(id)
+    @t_follow.where(user_id: id).all
   end
 end
 

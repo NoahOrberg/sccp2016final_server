@@ -1,15 +1,7 @@
-<!-- <p><%= @result%></p> -->
-<h1>Tweet Text List</h1>
-<a href="unfollows">unfollow user List</a>
-<form method="post" action="http://localhost:9292/logout">
-  <input type="submit" name="sub" value="logout">
-</form>
-<form method="post" action="http://localhost:9292/tweet">
-  <input type="text" name="text">
-  <input type="submit" value="tweet">
-</form>
-<hr>
+<h3>My PAGE</h3>
 <div id="app"></div>
+<hr>
+<a href="../timeline">return</a>
 
 <!-- Load Babel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.14.0/babel.min.js"></script>
@@ -25,11 +17,8 @@
       super(props);
     }
     render(){
-      const res = <%= @result %>
-      const listRes = res.map((x, idx) =>
-        <li><h3><a href={'users/'+x["name"]}>{x["name"]}</a>: at {x["create_time"]}</h3> {x["text"]}</li>
-      );
-      return <ul> {listRes} </ul>
+      const userinfo= <%= @result %>
+      return <div>Name: {userinfo["name"]}</div>
     }
   }
   ReactDOM.render(<App />, document.getElementById("app"));
