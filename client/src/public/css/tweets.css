@@ -1,0 +1,30 @@
+body {
+  background-color: #EEEfff;
+}
+textarea {  
+    resize: none;  
+}
+.tweets_page_title {
+  background-color: #DDDFFF;
+}
+.tweets_page_body {
+  background-color: #EEEFFF;
+}
+.tweets_list {
+  background-color: #DDDFFF;
+  border: 2px solid #000000;
+  margin: 10px 10px;
+}
+.tweets_title {
+  background-color: #EEEFFF;
+}
+.tweets_body {
+  background-color: #DDDFFF;
+  margin: 10px 10px;
+}
+.right {
+  margin-left: auto;
+}
+.none {
+  list-style-type: none;
+}

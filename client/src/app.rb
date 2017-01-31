@@ -113,6 +113,9 @@ class MainApp < Sinatra::Base
   end
   #}}}
   post '/tweet' do #{{{
+    if params[:text]=="" then
+      redirect '/timeline'
+    end
     uri = URI.parse("http://localhost:9393/tweets")
     https = Net::HTTP.new(uri.host, uri.port)
     # https.use_ssl = true

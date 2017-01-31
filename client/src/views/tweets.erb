@@ -1,11 +1,16 @@
 <!-- <p><%= @result%></p> -->
-<h1>Tweet Text List</h1>
+<div align="right">
+  <form method="post" action="http://localhost:9292/logout">
+    <input type="submit" name="sub" value="logout">
+  </form>
+</div>
+<div class="tweets_page_title">
+  <h1>Tweet Text List</h1>
+</div>
 <a href="unfollows">unfollow user List</a>
-<form method="post" action="http://localhost:9292/logout">
-  <input type="submit" name="sub" value="logout">
-</form>
 <form method="post" action="http://localhost:9292/tweet">
-  <input type="text" name="text">
+  <!-- <input type="text" name="text" size="23" style="height:50px;"> -->
+  <textarea name="text" cols="30" rows="10"></textarea>
   <input type="submit" value="tweet">
 </form>
 <hr>
@@ -27,9 +32,26 @@
     render(){
       const res = <%= @result %>
       const listRes = res.map((x, idx) =>
-        <li><h3><a href={'users/'+x["name"]}>{x["name"]}</a>: at {x["create_time"]}</h3> {x["text"]}</li>
+        <div className="tweets_list">
+          <li>
+            <div className="tweets_title">
+              <h3><a href={"users/"+x["name"]}>{x["name"]}</a>: at {x["create_time"]}</h3>
+            </div>
+            <div className="tweets_body">
+              {x["text"]}
+            </div>
+            <div>
+              <form method="post" action="http://localhost:9292/tweets/reply">
+                <textarea name="text" cols="30" rows="3"></textarea>
+                <input type="submit" value="reply"/>
+              </form>
+            </div>
+          </li>
+        </div>
       );
-      return <ul> {listRes} </ul>
+      return  (<ul className="none">
+                 {listRes}
+               </ul>)
     }
   }
   ReactDOM.render(<App />, document.getElementById("app"));
