@@ -123,7 +123,8 @@ class MainApp < Sinatra::Base
     req["Content-Type"] = "application/json"
     payload = {
       user_id: session[:id].to_i,
-      text: params[:text]
+      text: params[:text],
+      reply_tweet_id: params[:reply_tweet_id].to_i
     }.to_json
     req.body = payload
     res = https.request(req)
@@ -143,6 +144,7 @@ class MainApp < Sinatra::Base
       http.get('/tweets/timeline/'+num.to_s)
     }
     @result = res.body
+    @name = session[:name]
     erb :tweets
   end
   #}}}

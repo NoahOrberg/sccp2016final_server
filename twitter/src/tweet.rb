@@ -5,6 +5,7 @@ class Tweet
       primary_key :id
       String :text
       Integer :user_id
+      Integer :reply_tweet_id
       String :name
       Time :create_time
     end
@@ -22,7 +23,8 @@ class Tweet
       data = {error: "This user does not exist."}
     else
       # TODO: [0] is not good....
-      data = {text: params[:text], user_id: params[:user_id], name: userinfo[0][:name], create_time: Time.now.year.to_s+'-'+Time.now.month.to_s+'-'+Time.now.day.to_s+' '+Time.now.hour.to_s+':'+Time.now.min.to_s+':'+Time.now.sec.to_s+' '+Time.now.utc_offset.to_s}
+      p params
+      data = {text: params[:text], user_id: params[:user_id], name: userinfo[0][:name], reply_tweet_id: params[:reply_tweet_id], create_time: Time.now.year.to_s+'-'+Time.now.month.to_s+'-'+Time.now.day.to_s+' '+Time.now.hour.to_s+':'+Time.now.min.to_s+':'+Time.now.sec.to_s+' '+Time.now.utc_offset.to_s}
       id = @t_tweet.insert(data)
       data[:id] = id
       data
