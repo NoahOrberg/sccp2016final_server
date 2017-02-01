@@ -18,7 +18,7 @@ class MainApp < Sinatra::Base
     redirect 'login'
   end
   # register
-  get '/users/register' do #{{{
+  get '/register' do #{{{
     erb :register
   end
   #}}}
@@ -36,7 +36,7 @@ class MainApp < Sinatra::Base
     res = https.request(req)
     res = JSON.parse(res.body, {:symbolize_names => true})
     if res.include?(:error) then
-      redirect '/users/register'
+      redirect '/register'
     else
       redirect '/login'
     end

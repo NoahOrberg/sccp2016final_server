@@ -97,7 +97,6 @@ class MainApp < Sinatra::Base
   # json format is { user_id: 1, text: "foo", reply_tweet_id: 2 }
   post '/tweets', provides: :json do #{{{
     params=  JSON.parse(request.body.read, {:symbolize_names => true})
-    p params
     res = Tweet.new.tweet(params)
     if res.include?(:error) then
       res = {error: "The tweet user does not exist."}

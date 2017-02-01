@@ -9,11 +9,13 @@
 </div>
 <a href="unfollows">unfollow user List</a>
 <h4>Tweet!</h4>
-<form method="post" action="http://localhost:9292/tweet">
-  <input type="hidden" name="reply_tweet_id" value="0"/>
-  <textarea name="text" cols="30" rows="5"></textarea>
-  <input type="submit" value="tweet">
-</form>
+<div class="tweets_form">
+  <form method="post" action="http://localhost:9292/tweet">
+    <input type="hidden" name="reply_tweet_id" value="0"/>
+    <textarea name="text" cols="30" rows="5"></textarea>
+    <input type="submit" value="tweet" class="btn_tweets_submit"/>
+  </form>
+</div>
 <hr>
 <div id="app"></div>
 
@@ -42,11 +44,11 @@
             <div className="tweets_body">
               {x["text"]}
             </div>
-            <div className="tweets_reply">
+            <div className="tweets_form">
               <form method="post" action="http://localhost:9292/tweet">
                 <input type="hidden" name="reply_tweet_id" value={x["id"]}/>
                 <textarea name="text" cols="30" rows="3"></textarea>
-                <input type="submit" value="reply"/>
+                <input type="submit" value="reply" className="btn_tweets_submit"/>
               </form>
             </div>
             <ul className="none">
