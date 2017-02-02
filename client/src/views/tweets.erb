@@ -1,13 +1,31 @@
 <!-- <p><%= @result%></p> -->
-<div align="right">
-  <form method="post" action="http://localhost:9292/logout">
-    <%= @name %><input type="submit" name="sub" value="logout">
-  </form>
+
+<div class="menu">
+  <div><%= @name %></div>
+
+  <div class="tags">
+    <a href="timeline">TimeLine</a>
+  </div>
+
+  <div class="tags">
+    <a href="follows">FollowUsers</a>
+  </div>
+
+  <div class="tags">
+    <a href="unfollows">UnfollowUsers</a>
+  </div>
+
+  <div align="right">
+    <form method="post" action="http://localhost:9292/logout">
+      <input type="submit" name="sub" value="logout">
+    </form>
+  </div>
 </div>
+
+
 <div class="tweets_page_title">
   <h1>Tweet Text List</h1>
 </div>
-<a href="unfollows">unfollow user List</a>
 <h4>Tweet!</h4>
 <div class="tweets_form">
   <form method="post" action="http://localhost:9292/tweet">
@@ -34,7 +52,8 @@
     }
     render(){
       const res = <%= @result %>
-      const reply_list = res.filter((x) => x["reply_tweet_id"] != 0).sort((a, b) => (a["create_time"] < b["create_time"]) ? -1 : 1);
+      const relative_res = <%= @relative_result %>
+      const reply_list = relative_res.filter((x) => x["reply_tweet_id"] != 0).sort((a, b) => (a["create_time"] < b["create_time"]) ? -1 : 1);
       const tweet_list = res.filter((x) => x["reply_tweet_id"] == 0).map((x, idx) =>
         <div className="tweets_list">
           <li>

@@ -23,7 +23,7 @@
 
 
 <div class="tweets_page_title">
-  <h1>Unfollow Users</h1>
+  <h1>Follow Users</h1>
 </div>
 <div id="app"></div>
 <hr>
@@ -51,9 +51,9 @@
                 <h3>{x["name"]}</h3>
               </div>
               <div classname="follow_form">
-                <form method="post" action="http://localhost:9292/follows" >
+                <form method="post" action="http://localhost:9292/unfollows" >
                   <input type="hidden" name="follow_id" value={x["id"]}/> 
-                  <input type="submit" value="Follow" className="follow_btn"/>
+                  <input type="submit" value="Unfollow" className="follow_btn"/>
                 </form>
               </div>
             </div>

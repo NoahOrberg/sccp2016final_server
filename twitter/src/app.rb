@@ -151,6 +151,32 @@ class MainApp < Sinatra::Base
   end
   #}}}
 
+  # get follow Users
+  get '/users/:id/follow' do #{{{
+    json Follow.new.getFollow(params[:id].to_i){|itr| itr[:id]}.map{|itr| itr[:follow_id]}.map{|itr| User.new.getUser(itr)[0]}
+  end
+  #}}}
+
+  # get relative tweets (get tweet (me or follower))
+  get '/relative/:id/tweets' do #{{{
+    my_tweet = Tweet.new.getMyRelativeTweets(params[:id].to_i)
+    if my_tweet.nil? 
+      then my_tweet = []
+    end
+    my_tweet_id_list = Tweet.new.getUserTweets2(params[:id].to_i).map{|itr| itr[:id]}
+    relative_tweets = my_tweet_id_list.map{|itr| Tweet.new.getRelativeTweets(itr)}
+    res = relative_tweets.inject{|i, r| r.concat(i)}
+    if res.nil?
+      then res = []
+    end
+    res = res.concat(my_tweet)
+    if res.nil?
+      then json []
+      else json (res)
+    end
+  end
+  #}}}
+  
   # # # # # # # # # # # # # # # # # # # # # # # # #
   # -- The following methods are incomplete.... ;(
   # # # # # # # # # # # # # # # # # # # # # # # # #

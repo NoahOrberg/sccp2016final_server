@@ -143,12 +143,34 @@ class MainApp < Sinatra::Base
     res = Net::HTTP::start('localhost', 9393) {|http|
       http.get('/tweets/timeline/'+num.to_s)
     }
+    res2 = Net::HTTP::start('localhost', 9393) {|http|
+      http.get('/relative/'+num.to_s+'/tweets')
+    }
     @result = res.body
+    @relative_result = res2.body
     @name = session[:name]
     erb :tweets
   end
   #}}}
   
+  # Unfollow user
+  post '/unfollows' do #{{{
+    uri = URI.parse("http://localhost:9393/unfollows")
+    https = Net::HTTP.new(uri.host, uri.port)
+    # https.use_ssl = true
+    req = Net::HTTP::Post.new(uri.request_uri)
+    req["Content-Type"] = "application/json"
+    payload = {
+      user_id: session[:id].to_i,
+      follow_id: params[:follow_id].to_i
+    }.to_json
+    req.body = payload
+    res = https.request(req)
+    res = JSON.parse(res.body, {:symbolize_names => true})
+    redirect '/follows'
+  end
+  #}}}
+
   # Follow user
   post '/follows' do #{{{
     uri = URI.parse("http://localhost:9393/follows")
@@ -169,6 +191,7 @@ class MainApp < Sinatra::Base
 
   # Show unfollow users
   get '/unfollows' do #{{{
+    @title = 'UnfollowUsers'
     if session[:id].nil? then
       redirect '/login'
     end
@@ -176,7 +199,23 @@ class MainApp < Sinatra::Base
       http.get('/users/'+session[:id].to_s+'/unfollow')
     }
     @result = res.body
+    @name= session[:name]
     erb :unfollow_users
+  end
+  #}}}
+
+  # Show follow users
+  get '/follows' do #{{{
+    @title = 'followUsers'
+    if session[:id].nil? then
+      redirect '/login'
+    end
+    res = Net::HTTP::start('localhost', 9393) {|http|
+      http.get('/users/'+session[:id].to_s+'/follow')
+    }
+    @result = res.body
+    @name= session[:name]
+    erb :follow_users
   end
   #}}}
   

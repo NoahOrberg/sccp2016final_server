@@ -17,6 +17,15 @@ class Tweet
   def getUserTweets(params)
     @t_tweet.where(id: params[:id]).all
   end
+  def getUserTweets2(id)
+    @t_tweet.where(user_id: id).all
+  end
+  def getRelativeTweets(id)
+    @t_tweet.where(reply_tweet_id: id).all
+  end
+  def getMyRelativeTweets(id)
+    @t_tweet.where(user_id: id).exclude(reply_tweet_id: 0).all
+  end
   def tweet(params)
     userinfo = User.new.getUser(params[:user_id])
     if userinfo.empty? then
